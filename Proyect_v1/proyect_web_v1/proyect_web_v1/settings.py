@@ -25,12 +25,40 @@ SECRET_KEY = 'django-insecure-z75=ran-sn#m%7m3_r-5ea*l**rq2=-0eam9(&uhbb_(1s4zxi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+CORS_ALLOWED_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+]
+
+# Specify allowed headers (optional)
+CORS_ALLOWED_HEADERS = [
+    'content-type',
+    'x-csrftoken',
+    'authorization'
+]
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "https://localhost"
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 
 INSTALLED_APPS = [
+    'base_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -72,14 +100,16 @@ WSGI_APPLICATION = 'proyect_web_v1.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME':'postgres',
+        'USER':'postgres',
+        'PASSWORD':'Mikeadd',
+        'HOST':'db_postgres',   
+        'DATABASE_PORT':'5432'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
