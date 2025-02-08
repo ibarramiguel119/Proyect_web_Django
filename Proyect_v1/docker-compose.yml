@@ -28,14 +28,14 @@ services:
 
   web:
     container_name: web_mk
-    build: ./proyect_web_v1
+    build: ./Backend/proyect_web_v1
     command: python manage.py runserver 0.0.0.0:80
     expose:
       - 80
     volumes:
       - static:/app/static
-      - ./proyect_web_v1:/app  # Aquí ajustas el path del código
-      - ./certbot/www/:/var/www/certbot/:ro
+      - ./Backend/proyect_web_v1:/app  # Path actualizado del proyecto
+      - ./certbot/www:/var/www/certbot:ro
     depends_on:
       - db_postgres
     environment:
@@ -56,6 +56,14 @@ services:
       - static:/app/static
     depends_on:
       - web
+    networks:
+      - mk-network
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_mk
+    ports:
+      - "3000:80"  # Exponer el puerto 80 del contenedor en el puerto 3000 de tu máquina local
     networks:
       - mk-network
 
