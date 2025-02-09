@@ -1,29 +1,23 @@
-# Usar una imagen base de Node.js para construir la app
-FROM node:18 AS build
+# Usamos una imagen oficial de Node.js
+FROM node:16-alpine
 
-# Definir el directorio de trabajo en el contenedor
+# Definimos el directorio de trabajo
 WORKDIR /app
 
-# Copiar los archivos package.json y package-lock.json para instalar las dependencias
-COPY package*.json ./
+# Copiamos el package.json y package-lock.json para instalar las dependencias
+COPY package.json package-lock.json ./
 
-# Instalar las dependencias de la app
+# Instalamos las dependencias
 RUN npm install
 
-# Copiar el código fuente de la app al contenedor
+# Copiamos el resto de los archivos del proyecto
 COPY . .
 
-# Construir la aplicación React
+# Ejecutamos `npm run build` para generar los archivos estáticos
 RUN npm run build
 
-# Usar una imagen base de Nginx para servir la app construida
-FROM nginx:alpine
-
-# Copiar los archivos construidos al directorio de Nginx para que los sirva
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Exponer el puerto 80 para acceder a la app
+# Exponemos el puerto donde el frontend se ejecutará
 EXPOSE 80
 
-# Iniciar Nginx para servir la aplicación
-CMD ["nginx", "-g", "daemon off;"]
+# Por último, configuramos Nginx para servir los archivos estáticos
+CMD ["npm", "start"]

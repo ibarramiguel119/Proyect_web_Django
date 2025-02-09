@@ -45,28 +45,28 @@ services:
     networks:
       - mk-network
 
-  nginx:
-    image: nginx:1.13
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./config/nginx/conf.d:/etc/nginx/conf.d
-      - ./certbot/conf:/etc/letsencrypt/:ro
-      - static:/app/static
-    depends_on:
-      - web
-    networks:
-      - mk-network
-
   frontend:
     build: ./frontend
     container_name: frontend_mk
     ports:
-      - "3000:80"  # Exponer el puerto 80 del contenedor en el puerto 3000 de tu máquina local
+      - "3000:80"
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html  # Asegúrate de que esta ruta sea la correcta
+    networks:
+      - mk-network  
+
+  nginx:
+    image: nginx:1.13
+    container_name: proyect_v1-nginx-1
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html  # Monta el build de React en la misma ruta
     networks:
       - mk-network
 
+  
 volumes:
   postgres_data:
   static:
