@@ -101,4 +101,59 @@ Miguel Ibarra — `ibarramiguel119@gmail.com`
 
 ---
 
+## CI/CD con GitHub Actions
+
+Este proyecto incluye pipelines automatizados usando GitHub Actions para validar cambios en cada push y PR.
+
+### Workflows disponibles
+
+**1. CI Pipeline (`.github/workflows/ci.yml`)** — Ejecuta en cada push/PR
+
+- **Backend (Django)**
+  - Linting con `flake8`, `black`, `isort`
+  - Tests unitarios con pytest
+  - Chequeo de seguridad Django (`check --deploy`)
+  - Base de datos: PostgreSQL 15 con PostGIS
+
+- **Frontend (React)**
+  - Linting con `eslint`
+  - Formateo con `prettier`
+  - Tests unitarios con Jest
+  - Build de producción para validar que compila sin errores
+  - Chequeo de tamaño de build (alerta si > 5MB)
+
+- **Docker**
+  - Construcción de imágenes backend y frontend
+
+- **Seguridad**
+  - Escaneo de vulnerabilidades con Trivy
+  - Reportes subidos a GitHub Security tab
+
+**2. Deploy Pipeline (`.github/workflows/deploy.yml`)** — Despliegue automático a producción (opcional)
+
+- Se ejecuta al hacer push a la rama `Django-React`
+- Copia código, actualiza imágenes Docker, aplica migraciones
+- Requiere configurar secrets en GitHub (DEPLOY_KEY, DEPLOY_HOST, DEPLOY_USER, DEPLOY_PATH)
+
+### Configurar CI/CD
+
+1. **Habilitar Actions en GitHub**: ve a `Settings → Actions → General` y selecciona "Allow all actions and reusable workflows"
+
+2. **Para Deploy (opcional)**: ve a `Settings → Secrets and variables → Actions` y agrega:
+   - `DEPLOY_KEY`: tu clave SSH privada (para conectar al servidor)
+   - `DEPLOY_HOST`: IP o dominio del servidor
+   - `DEPLOY_USER`: usuario SSH
+   - `DEPLOY_PATH`: ruta del proyecto en el servidor (ej. `/home/deploy/Proyect_web_Django/Proyect_v1`)
+
+3. **Agregar tests**: ve a `Proyect_v1/Backend/proyect_web_v1/base_app/tests.py` y `Proyect_v1/frontend/src/App.test.js` para agregar tus tests. Verifica que pasan localmente antes de hacer push.
+
+### Visualizar resultados
+
+- Ve al tab **Actions** en GitHub para ver logs y estado de cada workflow
+- Búscalos también en **Pull Requests** para validar que tu PR no rompe nada
+
+---
+
+Última actualización: Enero 2026
+
 
