@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+
   db_postgres:
     container_name: db_postgres_mk
     image: postgis/postgis:15-3.3
@@ -17,11 +18,11 @@ services:
     container_name: pgadmin_mk
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: "ibarramiguel119@gmail.com"
-      PGADMIN_DEFAULT_PASSWORD: "mkroot"
+      PGADMIN_DEFAULT_EMAIL: ibarramiguel119@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: mkroot
     ports:
-      - '5050:80'
-    depends_on:  
+      - "5050:80"
+    depends_on:
       - db_postgres
     networks:
       - mk-network
@@ -29,48 +30,49 @@ services:
   web:
     container_name: web_mk
     build: ./Backend/proyect_web_v1
-    command: python manage.py runserver 0.0.0.0:80
+    command: python manage.py runserver 0.0.0.0:8000
     expose:
-      - 80
+      - "8000"
     volumes:
+      - ./Backend/proyect_web_v1:/app
       - static:/app/static
-      - ./Backend/proyect_web_v1:/app  # Path actualizado del proyecto
-      - ./certbot/www:/var/www/certbot:ro
     depends_on:
       - db_postgres
     environment:
-      - GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
-      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
-      - DJANGO_ALLOWED_HOSTS=${DOMAIN}
+      GDAL_LIBRARY_PATH: /usr/lib/libgdal.so
+      DJANGO_SECRET_KEY: django-inseguro
+      DJANGO_ALLOWED_HOSTS: localhost 127.0.0.1
     networks:
       - mk-network
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: frontend_mk
-    ports:
-      - "3000:80"
-    volumes:
-      - ./frontend/build:/usr/share/nginx/html  # Asegúrate de que esta ruta sea la correcta
     networks:
-      - mk-network  
+      - mk-network
+    # NO expone puertos
+    # Solo genera el build para nginx
 
   nginx:
-    image: nginx:1.13
+    image: nginx:1.25
     container_name: proyect_v1-nginx-1
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./frontend/build:/usr/share/nginx/html  # Monta el build de React en la misma ruta
+      - ./frontend/build:/usr/share/nginx/html:ro
+      - ./config/nginx/conf.d:/etc/nginx/conf.d:ro
+      - static:/app/static
+    depends_on:
+      - web
     networks:
       - mk-network
 
-  
 volumes:
   postgres_data:
   static:
-  proxy-dhparams:
 
 networks:
   mk-network:

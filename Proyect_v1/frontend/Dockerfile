@@ -1,23 +1,21 @@
-# Usamos una imagen oficial de Node.js
-FROM node:16-alpine
+# STAGE 1: Build - Compilar la aplicación React
+FROM node:16-alpine AS builder
 
-# Definimos el directorio de trabajo
 WORKDIR /app
 
-# Copiamos el package.json y package-lock.json para instalar las dependencias
 COPY package.json package-lock.json ./
 
-# Instalamos las dependencias
-RUN npm install
+RUN npm ci
 
-# Copiamos el resto de los archivos del proyecto
 COPY . .
 
-# Ejecutamos `npm run build` para generar los archivos estáticos
 RUN npm run build
 
-# Exponemos el puerto donde el frontend se ejecutará
+# STAGE 2: Production - Servir con Nginx
+FROM nginx:stable-alpine
+
+COPY --from=builder /app/build /usr/share/nginx/html
+
 EXPOSE 80
 
-# Por último, configuramos Nginx para servir los archivos estáticos
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]
