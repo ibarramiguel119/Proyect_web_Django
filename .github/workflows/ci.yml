@@ -150,6 +150,9 @@ jobs:
   # ============================================
   security:
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write  # Required for SARIF upload
+      contents: read          # Required for repository checkout
 
     steps:
     - uses: actions/checkout@v3
@@ -163,7 +166,7 @@ jobs:
         output: 'trivy-results.sarif'
 
     - name: Upload Trivy results to GitHub Security
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-results.sarif'
 
