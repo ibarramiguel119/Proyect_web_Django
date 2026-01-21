@@ -110,7 +110,7 @@ WSGI_APPLICATION = 'proyect_web_v1.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': "django.db.backends.postgresql",
         'NAME':'postgres',
         'USER':'postgres',
         'PASSWORD':'Mikeadd',
