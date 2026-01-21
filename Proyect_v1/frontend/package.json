@@ -7,7 +7,7 @@
     "cra-template": "1.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.12.0",
+    "react-router-dom": "^6.30.3",
     "react-scripts": "^5.0.1",
     "web-vitals": "^4.2.4"
   },
@@ -34,5 +34,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2"
   }
 }
